@@ -1,0 +1,11 @@
+<launch> 
+
+    <!-- Launch turtlbot3 empty world -->
+    <include file="$(find turtlebot3_gazebo)/launch/turtlebot3_empty_world.launch"/>
+
+    <!-- Launch turtlbot3_slam with gmapping -->
+    <include file="$(find turtlebot3_slam)/launch/turtlebot3_slam.launch">
+        <arg name="slam_methods" value="gmapping"/>
+    </include>
+
+</launch>

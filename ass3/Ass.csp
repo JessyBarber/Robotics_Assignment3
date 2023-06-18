@@ -1,0 +1,65 @@
+﻿#include "Map.csp";
+// Robot position: //This needs to be in the map file
+var i = -1;
+var j = -1;
+var r = 0;
+var c = 0;
+ R()=getRobot {	
+ 	i=0;
+ 	j=0;
+		while (i<N) {
+			while (j<M) {
+				if (ROS[i][j] == 3) {
+					r = i;
+					c = j;}
+			j++;}
+		i++;
+		j=0;}
+		} -> Path;
+
+//Directions are the compass in Degress of the cardinal co-ords.
+//N = 0, E = 90, S = 180, W = 270
+
+//0 = unknown, 1 = free, 2 = blocked, 3 = robot, 4 = goal
+
+
+ 
+Path = [j < 0    && i < 0  ] R[]
+       [i>0 && D == 0   && c>=1  && ROS[r][c-1] <= 1]N_MoveLeft[]  
+       [i>0 && D == 90  && r>=1  && ROS[r-1][c] <= 1]E_MoveLeft[] 
+       [i>0 && D == 180 && c+1<M && ROS[r][c+1] <= 1]S_MoveLeft[] 
+       [i>0 && D == 270 && r+1<N && ROS[r+1][c] <= 1]W_MoveLeft[]
+       [i>0 && D == 0   && c+1<M && ROS[r][c+1] <= 1]N_MoveRight[]
+       [i>0 && D == 90  && r+1<M && ROS[r+1][c] <= 1]E_MoveRight[]
+       [i>0 && D == 180 && c>=1  && ROS[r][c-1] <= 1]S_MoveRight[]
+       [i>0 && D == 270 && r>=1  && ROS[r-1][c] <= 1]W_MoveRight[]
+       [i>0 && D == 0   && r>=1  && ROS[r-1][c] <= 1]N_MoveFwd[]
+       [i>0 && D == 90  && c+1<M && ROS[r][c+1] <= 1]E_MoveFwd[]
+       [i>0 && D == 180 && r+1<N && ROS[r+1][c] <= 1]S_MoveFwd[]
+       [i>0 && D == 270 && c>=1  && ROS[r][c-1] <= 1]W_MoveFwd;
+       
+
+//MoveLeft = Turn left depending on direction the robot is facing.
+N_MoveLeft = [D == 0   && c>=1  && ROS[r][c-1] <= 1]	N_go_left{D=270;ROS[r][c]=1; c=c-1; ROS[r][c]=3} 	-> Path;
+E_MoveLeft = [D == 90  && r>=1  && ROS[r-1][c] <= 1]	E_go_left{D=000;ROS[r][c]=1; r=r-1; ROS[r][c]=3} 	-> Path;
+S_MoveLeft = [D == 180 && c+1<M && ROS[r][c+1] <= 1]	S_go_left{D=090;ROS[r][c]=1; c=c+1; ROS[r][c]=3} 	-> Path;
+W_MoveLeft = [D == 270 && r+1<N && ROS[r+1][c] <= 1]	W_go_left{D=180;ROS[r][c]=1; r=r+1; ROS[r][c]=3} 	-> Path;
+
+//MoveRight = Turn right depending on direction the robot is facing.
+N_MoveRight = [D == 0   && c+1<M && ROS[r][c+1] <= 1] N_go_right{D=090;ROS[r][c]=1; c=c+1; ROS[r][c]=3} 	-> Path;
+E_MoveRight = [D == 90  && r+1<M && ROS[r+1][c] <= 1] E_go_right{D=180;ROS[r][c]=1; r=r+1; ROS[r][c]=3}		-> Path;
+S_MoveRight = [D == 180 && c>=1  && ROS[r][c-1] <= 1] S_go_right{D=270;ROS[r][c]=1; c=c-1; ROS[r][c]=3} 	-> Path;
+W_MoveRight = [D == 270 && r>=1  && ROS[r-1][c] <= 1] W_go_right{D=000;ROS[r][c]=1; r=r-1; ROS[r][c]=3} 	-> Path;
+
+//MoveForward = Move ahead maintaining the direction the robot is facing.
+N_MoveFwd   = [D == 0   && r>=1  && ROS[r-1][c] <= 1] N_go_fwd{ROS[r][c]=0; r=r-1; ROS[r][c]=3} 			-> Path;
+E_MoveFwd   = [D == 90  && c+1<M && ROS[r][c+1] <= 1] E_go_fwd{ROS[r][c]=0; c=c+1; ROS[r][c]=3} 			-> Path;
+S_MoveFwd   = [D == 180 && r+1<N && ROS[r+1][c] <= 1] S_go_fwd{ROS[r][c]=0; r=r+1; ROS[r][c]=3} 			-> Path;
+W_MoveFwd   = [D == 270 && c>=1  && ROS[r][c-1] <= 1] W_go_fwd{ROS[r][c]=0; c=c-1; ROS[r][c]=3} 			-> Path;
+
+
+#define outside r > N || c > M || r < 0 || c < 0;
+#define goal ROS[5][15] == 3;
+
+//#assert Path reaches outside; 
+#assert Path reaches goal;

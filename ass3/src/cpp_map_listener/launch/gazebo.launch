@@ -1,0 +1,9 @@
+<launch> 
+
+  <!-- Include turtlebot3_gazebo.launch with your world file -->
+  <arg name="world_name" default="$(find cpp_map_listener_pkg)/worlds/test.world"/>
+  <include file="$(find turtlebot3_gazebo)/launch/turtlebot3_gazebo.launch">
+    <arg name="world_name" value="$(arg world_name)" />
+  </include>
+
+</launch>

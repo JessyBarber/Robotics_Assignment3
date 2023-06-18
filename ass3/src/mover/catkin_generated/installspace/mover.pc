@@ -1,0 +1,8 @@
+prefix=/usr/local
+
+Name: mover
+Description: Description of mover
+Version: 0.0.0
+Cflags: -I${prefix}/include
+Libs: -L${prefix}/lib -lmover
+Requires: roscpp std_msgs geometry_msgs message_runtime

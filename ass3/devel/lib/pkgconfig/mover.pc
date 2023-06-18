@@ -1,0 +1,8 @@
+prefix=/home/student/ass3/devel
+
+Name: mover
+Description: Description of mover
+Version: 0.0.0
+Cflags: -I/home/student/ass3/devel/include -I/home/student/ass3/src/mover/include
+Libs: -L${prefix}/lib -lmover
+Requires: roscpp std_msgs geometry_msgs message_runtime
